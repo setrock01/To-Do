@@ -1,16 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useUser } from "./context/UserContext";
+import UserSelect from "./pages/UserSelect";
+import TaskPage from "./pages/TaskPage";
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const { currentUser } = useUser();
+  const [ready, setReady] = useState(false);
 
-  return (
-    <>
-      <p className='text-3xl text-red-500'>Hola putos</p>
-    </>
-  )
+  if (!currentUser || !ready) {
+    return <UserSelect onSelect={() => setReady(true)} />;
+  }
+
+  return <TaskPage />;
 }
-
-export default App
