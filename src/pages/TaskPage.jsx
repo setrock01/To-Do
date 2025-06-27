@@ -7,7 +7,7 @@ export default function TaskPage() {
   const [newTask, setNewTask] = useState("");
   const [tasks, setTasks] = useState([]);
 
-  // Cargar tareas desde localStorage al entrar
+  // Cargar tareas al iniciar
   useEffect(() => {
     const saved = localStorage.getItem(`tasks-${currentUser.username}`);
     if (saved) {
@@ -15,7 +15,7 @@ export default function TaskPage() {
     }
   }, [currentUser.username]);
 
-  // Guardar tareas en localStorage cada vez que cambien
+  // Guardar tareas cada vez que cambien
   useEffect(() => {
     localStorage.setItem(`tasks-${currentUser.username}`, JSON.stringify(tasks));
   }, [tasks, currentUser.username]);
@@ -36,53 +36,67 @@ export default function TaskPage() {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-        <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">📝 Tareas de {currentUser.username}</h2>
-        <button
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-sky-400 text-white px-6 py-8">
+      <div className="max-w-3xl mx-auto bg-white/80 text-gray-800 rounded-2xl p-8 shadow-xl">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-extrabold flex items-center gap-2">
+            📝 Tareas de <span className="text-blue-600">{currentUser.username}</span>
+          </h2>
+          <button
             onClick={logout}
-            className="text-sm text-blue-500 hover:underline"
-        >
-            Cerrar sesión
-        </button>
-        </div>
-      <div className="flex gap-2 mb-6">
-        <input
-          className="border px-3 py-2 rounded w-full"
-          type="text"
-          placeholder="Nueva tarea..."
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
-        />
-        <button
-          onClick={handleAddTask}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Añadir
-        </button>
-      </div>
-
-      <ul className="space-y-3">
-        {tasks.map((task) => (
-          <li
-            key={task.id}
-            className={`flex justify-between items-center px-4 py-2 rounded border ${
-              task.done ? "bg-green-100 line-through text-gray-500" : "bg-white"
-            }`}
+            className="text-sm font-medium text-blue-600 hover:underline transition"
           >
-            <span onClick={() => toggleTask(task.id)} className="cursor-pointer flex-1">
-              {task.text}
-            </span>
-            <button
-              onClick={() => deleteTask(task.id)}
-              className="ml-4 text-red-500 hover:text-red-700"
-            >
-              ❌
-            </button>
-          </li>
-        ))}
-      </ul>
+            Cerrar sesión
+          </button>
+        </div>
+
+        <div className="flex gap-3 mb-6">
+          <input
+            className="flex-1 px-4 py-3 bg-white rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            type="text"
+            placeholder="Escribe una nueva tarea..."
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
+          />
+          <button
+            onClick={handleAddTask}
+            className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all shadow"
+          >
+            Añadir
+          </button>
+        </div>
+
+        <ul className="space-y-4">
+          {tasks.length === 0 ? (
+            <p className="text-gray-500 text-center">No tienes tareas aún. ¡Empieza creando una! 🎯</p>
+          ) : (
+            tasks.map((task) => (
+              <li
+                key={task.id}
+                className={`flex justify-between items-center px-5 py-4 rounded-xl border shadow-sm transition ${
+                  task.done
+                    ? "bg-green-100 line-through text-gray-500"
+                    : "bg-white hover:bg-blue-50"
+                }`}
+              >
+                <span
+                  onClick={() => toggleTask(task.id)}
+                  className="cursor-pointer flex-1 text-lg"
+                >
+                  {task.text}
+                </span>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className="text-red-500 hover:text-red-700 text-xl"
+                >
+                  ❌
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
